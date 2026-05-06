@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Open-Meteo API Response
 struct OpenMeteoResponse: Codable {
     let latitude: Double
     let longitude: Double
@@ -60,23 +59,4 @@ struct OpenMeteoResponse: Codable {
             case windSpeed10mMax = "wind_speed_10m_max"
         }
     }
-}
-
-// MARK: - View Models (derived from API response)
-struct HourlyItem: Identifiable {
-    let id = UUID()
-    let date: Date
-    let temp: Double
-    let weatherCode: Int
-    let precipProbability: Int
-}
-
-struct DailyItem: Identifiable {
-    let id = UUID()
-    let date: Date
-    let tempMax: Double
-    let tempMin: Double
-    let weatherCode: Int
-    let precipProbabilityMax: Int
-    let windSpeedMax: Double
 }

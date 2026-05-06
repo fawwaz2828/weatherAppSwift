@@ -1,8 +1,7 @@
-import SwiftUI
+import Foundation
 
 struct WeatherHelper {
 
-    // MARK: - WMO Weather Code → SF Symbol
     static func symbolName(for code: Int, isDay: Bool = true) -> String {
         switch code {
         case 0:          return isDay ? "sun.max.fill" : "moon.stars.fill"
@@ -26,7 +25,6 @@ struct WeatherHelper {
         }
     }
 
-    // MARK: - WMO Weather Code → Description
     static func conditionText(for code: Int) -> String {
         switch code {
         case 0:          return "Clear Sky"
@@ -52,7 +50,6 @@ struct WeatherHelper {
         }
     }
 
-    // MARK: - Build HourlyItems from API response
     static func hourlyItems(from response: OpenMeteoResponse) -> [HourlyItem] {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
@@ -82,7 +79,6 @@ struct WeatherHelper {
             ))
         }
 
-        // Fallback: show first 6 upcoming hours even if past midnight
         if items.isEmpty {
             for i in times.indices {
                 guard let date = formatter.date(from: times[i]) else { continue }
@@ -101,7 +97,6 @@ struct WeatherHelper {
         return Array(items.prefix(6))
     }
 
-    // MARK: - Build DailyItems from API response
     static func dailyItems(from response: OpenMeteoResponse) -> [DailyItem] {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -128,7 +123,6 @@ struct WeatherHelper {
         }
     }
 
-    // MARK: - Date Formatting
     static func hourString(from date: Date) -> String {
         let f = DateFormatter()
         f.dateFormat = "HH:mm"
@@ -142,27 +136,5 @@ struct WeatherHelper {
         let f = DateFormatter()
         f.dateFormat = short ? "EEE" : "EEEE"
         return f.string(from: date)
-    }
-}
-
-// MARK: - Color Hex Init
-extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3:  (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:  (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:  (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default: (a, r, g, b) = (1, 1, 1, 0)
-        }
-        self.init(.sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
     }
 }
